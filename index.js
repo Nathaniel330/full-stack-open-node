@@ -58,7 +58,7 @@ let persons = [
 ]
 
 app.get('/', (req, res) => {
-    res.send("<h1>What's after like?</h1>")
+    res.send("<h1>Node and Express Backend Part 3</h1>")
 })
 
 app.get('/api/persons', (req, res) => {
