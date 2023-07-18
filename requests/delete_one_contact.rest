@@ -1,2 +1,2 @@
-DELETE http://localhost:3001/api/persons/123
-# DELETE https://dark-gray-lemur-hose.cyclic.app/api/persons/85
+# DELETE http://localhost:3001/api/persons/123
+DELETE https://dark-gray-lemur-hose.cyclic.app/api/persons/64b54199481e41c32446623a
