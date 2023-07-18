@@ -134,15 +134,15 @@ app.post('/api/persons', (req, res) => {
     
 })
 
-app.put('/api/persons/:id', (req, res, next) => {
+// app.put('/api/persons/:id', (req, res, next) => {
     
-    Contact.find({})
-        .then(contacts => {
-            contacts.forEach(contact => {
-                console.log(contact)
-            })
-            res.json(contacts)
-        })
+    // Contact.find({})
+    //     .then(contacts => {
+    //         contacts.forEach(contact => {
+    //             console.log(contact)
+    //         })
+    //         res.json(contacts)
+    //     })
     // let frontendRequestId = 0;
     // Contact.find({}).then(response => {
     //     response.forEach(person => {
@@ -152,7 +152,7 @@ app.put('/api/persons/:id', (req, res, next) => {
     //         }
     //     })
     // })
-})
+// })
     // Contact
     //     .findByIdAndUpdate(
     //         req.params.id,
