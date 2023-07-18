@@ -101,17 +101,6 @@ app.delete('/api/persons/:id', (req, res, next) => {
 app.post('/api/persons', (req, res) => {
     
     if (req.body.name && req.body.number) {
-        // for (let i = 0; i < persons.length; i ++) {
-        //     if (persons[i].name === req.body.name) {
-        //         return res.status(400).json({ error: 'name must be unique' })
-        //     }
-        // }
-
-        // const person = {
-        //     // id: id,
-        //     name: req.body.name,
-        //     number: req.body.number,
-        // }
         const person = new Contact({
             name: req.body.name,
             number: req.body.number
