@@ -133,37 +133,19 @@ app.post('/api/persons', (req, res) => {
     
 })
 
-// app.put('/api/persons/:id', (req, res, next) => {
-    
-    // Contact.find({})
-    //     .then(contacts => {
-    //         contacts.forEach(contact => {
-    //             console.log(contact)
-    //         })
-    //         res.json(contacts)
-    //     })
-    // let frontendRequestId = 0;
-    // Contact.find({}).then(response => {
-    //     response.forEach(person => {
-    //         frontendRequestId += 1
-    //         if (req.params.id === frontendRequestId) {
-    //             res.json(person)
-    //         }
-    //     })
-    // })
-// })
-    // Contact
-    //     .findByIdAndUpdate(
-    //         req.params.id,
-    //         {
-    //             name: req.body.name,
-    //             number: req.body.number,
-    //         },
-    //         {new: true}
-    //     )
-    //     .then(updatedContact => res.json(updatedContact))
-    //     .catch(error => next(error))
-// })
+app.put('/api/persons/:id', (req, res, next) => {
+    Contact
+        .findByIdAndUpdate(
+            req.params.id,
+            {
+                name: req.body.name,
+                number: req.body.number,
+            },
+            {new: true}
+        )
+        .then(updatedContact => res.json(updatedContact))
+        .catch(error => next(error))
+})
 
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
