@@ -11,8 +11,16 @@ mongoose
     .catch(error => console.log('failed to connect to database:', error.message))
 
 const contactSchema = new mongoose.Schema({
-  name: String,
-  number: String,
+    name: {
+        type: String,
+        minLength: 3,
+        required: true
+    },
+    number: {
+        type: String,
+        minLength: 8,
+        required: true
+    }
 })
 
 contactSchema.set('toJSON', {

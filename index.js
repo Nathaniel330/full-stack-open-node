@@ -98,28 +98,14 @@ app.delete('/api/persons/:id', (req, res, next) => {
     res.status(204).end()
 })
 
-app.post('/api/persons', (req, res) => {
-    
-    if (req.body.name && req.body.number) {
-        const person = new Contact({
-            name: req.body.name,
-            number: req.body.number
-        })
-    
-        // persons = persons.concat(person)
-        person.save().then(savedPerson => {
-            return res.json(savedPerson)
-        })
-    }
-
-    if (!req.body.name) {
-        return res.status(400).json({ error: 'name should not be undefined' })
-    }
-
-    if (!req.body.number){
-        return res.status(400).json({ error: 'number should not be undefined' })
-    } 
-    
+app.post('/api/persons', (req, res, next) => {
+    const person = new Contact({
+        name: req.body.name,
+        number: req.body.number
+    })
+    person.save()
+        .then(savedPerson => res.json(savedPerson))
+        .catch(error => next(error))    
 })
 
 app.put('/api/persons/:id', (req, res, next) => {
@@ -130,7 +116,7 @@ app.put('/api/persons/:id', (req, res, next) => {
                 name: req.body.name,
                 number: req.body.number,
             },
-            {new: true}
+            {new: true, runValidators: true, context: 'query'}
         )
         .then(updatedContact => res.json(updatedContact))
         .catch(error => next(error))
@@ -147,6 +133,8 @@ const errorHandler = (error, req, res, next) => {
 
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error)
