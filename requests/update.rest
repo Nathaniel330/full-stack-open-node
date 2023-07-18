@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/64b61ccc6ba20e093f43a2fb
+Content-Type: application/json
+
+{
+    "name": "Obanai Iguro FOR REAL", 
+    "number": "72-12-8947232 FOR REAL"
+}

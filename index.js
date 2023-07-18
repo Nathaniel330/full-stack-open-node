@@ -1,7 +1,10 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
 const app = express()
+const Contact = require('./models/contact')
+const contact = require('./models/contact')
 
 app.use(express.json())
 app.use(express.static('build'))
@@ -64,58 +67,61 @@ app.get('/', (req, res) => {
 
 app.get('/api/persons', (req, res) => {
     console.log('served all')
-    res.json(persons)
+    Contact.find({}).then(contacts => res.json(contacts))
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-    if (person) {
-        console.log('served', id)
-        res.json(person)
-    } else {
-        console.log('not found')
-        res.status(404).end()
-    }
+app.get('/api/persons/:id', (req, res, next) => {
+    Contact
+        .findById(req.params.id)
+        .then(contact => res.json(contact))
+        .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
     const date = new Date()
-    const statement = persons.length > 0
-        ? `Phonebook has info for ${persons.length} people`
+    let count = 0
+    Contact.find({}).then(result => {
+        result.forEach(() => count++)
+        console.log(count)
+        const statement = count > 0
+        ? `Phonebook has info for ${count} people`
         : `Phone book is empty`
-    res.send(`<h3>${statement}</h3><p>${date}</p>`)
+        res.send(`<h3>${statement}</h3><p>${date}</p>`)
+    })
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => {
-        return person.id !== id
-    })
+app.delete('/api/persons/:id', (req, res, next) => {
+
+    Contact.findByIdAndRemove(req.params.id)
+        .then(result => res.status(204).end())
+        .catch(error => next(error))
 
     res.status(204).end()
 })
 
 app.post('/api/persons', (req, res) => {
-    const randomId = () => Math.ceil(Math.random() * 190) + 10
-    const id = randomId()
     
     if (req.body.name && req.body.number) {
+        // for (let i = 0; i < persons.length; i ++) {
+        //     if (persons[i].name === req.body.name) {
+        //         return res.status(400).json({ error: 'name must be unique' })
+        //     }
+        // }
 
-        for (let i = 0; i < persons.length; i ++) {
-            if (persons[i].name === req.body.name) {
-                return res.status(400).json({ error: 'name must be unique' })
-            }
-        }
-
-        const person = {
-            id: id,
+        // const person = {
+        //     // id: id,
+        //     name: req.body.name,
+        //     number: req.body.number,
+        // }
+        const person = new Contact({
             name: req.body.name,
-            number: req.body.number,
-        }
+            number: req.body.number
+        })
     
-        persons = persons.concat(person)
-        return res.json(person)
+        // persons = persons.concat(person)
+        person.save().then(savedPerson => {
+            return res.json(savedPerson)
+        })
     }
 
     if (!req.body.name) {
@@ -128,11 +134,56 @@ app.post('/api/persons', (req, res) => {
     
 })
 
+app.put('/api/persons/:id', (req, res, next) => {
+    
+    Contact.find({})
+        .then(contacts => {
+            contacts.forEach(contact => {
+                console.log(contact)
+            })
+            res.json(contacts)
+        })
+    // let frontendRequestId = 0;
+    // Contact.find({}).then(response => {
+    //     response.forEach(person => {
+    //         frontendRequestId += 1
+    //         if (req.params.id === frontendRequestId) {
+    //             res.json(person)
+    //         }
+    //     })
+    // })
+})
+    // Contact
+    //     .findByIdAndUpdate(
+    //         req.params.id,
+    //         {
+    //             name: req.body.name,
+    //             number: req.body.number,
+    //         },
+    //         {new: true}
+    //     )
+    //     .then(updatedContact => res.json(updatedContact))
+    //     .catch(error => next(error))
+// })
+
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.use(unknownEndpoint)
 
-const PORT = 3001
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+
+    if (error.name === 'CastError') {
+        return response.status(400).send({ error: 'malformatted id' })
+    }
+
+    next(error)
+}
+
+// this has to be the last loaded middleware.
+app.use(errorHandler)
+
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log(`Connected to PORT ${PORT}`))

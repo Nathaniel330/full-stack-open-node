@@ -1,7 +1,8 @@
 POST http://localhost:3001/api/persons
+# POST https://dark-gray-lemur-hose.cyclic.app/api/persons
 Content-Type: application/json
 
 {
-    "name": "Squall Leonhart", 
-    "number": "88-01-1234567"
+    "name": "Obanai Igurota", 
+    "number": "72-12-8947232-69"
 }

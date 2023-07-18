@@ -1,1 +1,2 @@
-GET http://localhost:3001/api/persons/4
+# GET http://localhost:3001/api/persons/4
+GET https://dark-gray-lemur-hose.cyclic.app/api/persons/143
